@@ -42,7 +42,7 @@ func (s *Server) JoinChat(ctx context.Context, desiredName *pb.StringValue) (*pb
 		Name: desiredName.Value,
 	}
 	s.chatUsers = append(s.chatUsers, &chat_user)
-	fmt.Println("Participant " + chat_user.Name + " joined Chit Chat at logical time L")
+	fmt.Println("Participant '" + chat_user.Name + "' joined Chit Chat at logical time L")
 	fmt.Println("nb users:" + strconv.Itoa(len(s.chatUsers)))
 	fmt.Println()
 
@@ -53,7 +53,7 @@ func (s *Server) LeaveChat(ctx context.Context, req *pb.ChatUser) (*pb.Nothing, 
 	for i, u := range s.chatUsers {
 		if u.Name == req.Name {
 			s.chatUsers = append(s.chatUsers[:i], s.chatUsers[i+1:]...)
-			fmt.Println("Participant " + req.Name + " left Chit Chat at logical time L")
+			fmt.Println("Participant '" + req.Name + "' left Chit Chat at logical time L")
 			fmt.Println("nb users:" + strconv.Itoa(len(s.chatUsers)))
 			break
 		}

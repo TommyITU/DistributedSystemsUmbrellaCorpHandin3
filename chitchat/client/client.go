@@ -36,6 +36,8 @@ func main() {
 			fmt.Println("User created:" + chatUser.Name)
 			break
 		}
+
+		fmt.Println(err)
 	}
 
 	//Handle application exit
