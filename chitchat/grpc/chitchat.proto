@@ -1,0 +1,18 @@
+
+syntax = "proto3";
+option go_package = "chitchat/grpc/chitchat";
+
+message Nothing {}
+
+message StringValue {
+    string value = 1;
+}
+
+message ChatUser {
+    string name = 1;
+}
+
+service ChatService {
+    rpc JoinChat(StringValue) returns (ChatUser);
+    rpc LeaveChat(ChatUser) returns (Nothing);
+}
