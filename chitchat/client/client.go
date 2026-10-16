@@ -51,6 +51,47 @@ func main() {
 		os.Exit(0)
 	}()
 
-	for {
+	//connect to chatStream
+	chatStream, err := client.ChatStream(context.Background())
+	if err != nil {
+		panic(err)
 	}
+
+	go func() {
+		for {
+			msg, err := chatStream.Recv()
+			if err != nil {
+				fmt.Println("Disconnected")
+				return
+			}
+
+			fmt.Println(msg.Username + ": " + msg.Message + " @ " + msg.Timestamp)
+		}
+	}()
+
+	for {
+		var text string
+
+		//fmt.Print("> ")
+		fmt.Scanln(&text)
+
+		msg := &pb.ChatMessage{
+			Username:  chatUser.Name,
+			Message:   text,
+			Timestamp: "0",
+		}
+
+		err := chatStream.Send(msg)
+
+		/*err := chatStream.Send(&pb.ChatMessage{
+			Message:   text,
+			Timestamp: "temp",
+		})*/
+
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+	}
+
 }

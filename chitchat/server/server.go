@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"strconv"
+	"sync"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -15,7 +17,9 @@ import (
 
 type Server struct {
 	pb.UnimplementedChatServiceServer
-	chatUsers []*pb.ChatUser
+	chatUsers   []*pb.ChatUser
+	chatStreams []pb.ChatService_ChatStreamServer
+	mu          sync.Mutex
 }
 
 func main() {
@@ -61,4 +65,43 @@ func (s *Server) LeaveChat(ctx context.Context, req *pb.ChatUser) (*pb.Nothing, 
 
 	fmt.Println()
 	return &pb.Nothing{}, nil
+}
+
+func (s *Server) ChatStream(chatStream pb.ChatService_ChatStreamServer) error {
+	s.mu.Lock()
+	s.chatStreams = append(s.chatStreams, chatStream)
+	s.mu.Unlock()
+
+	fmt.Println("Client connected")
+
+	defer func() {
+		s.mu.Lock()
+		defer s.mu.Unlock()
+		for i, st := range s.chatStreams {
+			if st == chatStream {
+				s.chatStreams = append(s.chatStreams[:i], s.chatStreams[i+1:]...)
+				break
+			}
+		}
+		fmt.Println("Client disconnected")
+	}()
+
+	for {
+		msg, err := chatStream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("%s: %s\n", msg.Message, msg.Timestamp)
+
+		s.mu.Lock()
+		for _, clientStream := range s.chatStreams {
+			clientStream.Send(msg)
+		}
+		s.mu.Unlock()
+	}
 }

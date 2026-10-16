@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ChatService_JoinChat_FullMethodName  = "/ChatService/JoinChat"
-	ChatService_LeaveChat_FullMethodName = "/ChatService/LeaveChat"
+	ChatService_JoinChat_FullMethodName   = "/ChatService/JoinChat"
+	ChatService_LeaveChat_FullMethodName  = "/ChatService/LeaveChat"
+	ChatService_ChatStream_FullMethodName = "/ChatService/ChatStream"
 )
 
 // ChatServiceClient is the client API for ChatService service.
@@ -29,6 +30,7 @@ const (
 type ChatServiceClient interface {
 	JoinChat(ctx context.Context, in *StringValue, opts ...grpc.CallOption) (*ChatUser, error)
 	LeaveChat(ctx context.Context, in *ChatUser, opts ...grpc.CallOption) (*Nothing, error)
+	ChatStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChatMessage, ChatMessage], error)
 }
 
 type chatServiceClient struct {
@@ -59,12 +61,26 @@ func (c *chatServiceClient) LeaveChat(ctx context.Context, in *ChatUser, opts ..
 	return out, nil
 }
 
+func (c *chatServiceClient) ChatStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChatMessage, ChatMessage], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &ChatService_ServiceDesc.Streams[0], ChatService_ChatStream_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[ChatMessage, ChatMessage]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type ChatService_ChatStreamClient = grpc.BidiStreamingClient[ChatMessage, ChatMessage]
+
 // ChatServiceServer is the server API for ChatService service.
 // All implementations must embed UnimplementedChatServiceServer
 // for forward compatibility.
 type ChatServiceServer interface {
 	JoinChat(context.Context, *StringValue) (*ChatUser, error)
 	LeaveChat(context.Context, *ChatUser) (*Nothing, error)
+	ChatStream(grpc.BidiStreamingServer[ChatMessage, ChatMessage]) error
 	mustEmbedUnimplementedChatServiceServer()
 }
 
@@ -80,6 +96,9 @@ func (UnimplementedChatServiceServer) JoinChat(context.Context, *StringValue) (*
 }
 func (UnimplementedChatServiceServer) LeaveChat(context.Context, *ChatUser) (*Nothing, error) {
 	return nil, status.Error(codes.Unimplemented, "method LeaveChat not implemented")
+}
+func (UnimplementedChatServiceServer) ChatStream(grpc.BidiStreamingServer[ChatMessage, ChatMessage]) error {
+	return status.Error(codes.Unimplemented, "method ChatStream not implemented")
 }
 func (UnimplementedChatServiceServer) mustEmbedUnimplementedChatServiceServer() {}
 func (UnimplementedChatServiceServer) testEmbeddedByValue()                     {}
@@ -138,6 +157,13 @@ func _ChatService_LeaveChat_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ChatService_ChatStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(ChatServiceServer).ChatStream(&grpc.GenericServerStream[ChatMessage, ChatMessage]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type ChatService_ChatStreamServer = grpc.BidiStreamingServer[ChatMessage, ChatMessage]
+
 // ChatService_ServiceDesc is the grpc.ServiceDesc for ChatService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -154,6 +180,13 @@ var ChatService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ChatService_LeaveChat_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ChatStream",
+			Handler:       _ChatService_ChatStream_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "grpc/chitchat.proto",
 }

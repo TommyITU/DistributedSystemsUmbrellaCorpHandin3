@@ -12,7 +12,14 @@ message ChatUser {
     string name = 1;
 }
 
+message ChatMessage {
+    string username = 1;
+    string message = 2;
+    string timestamp = 3;
+}
+
 service ChatService {
     rpc JoinChat(StringValue) returns (ChatUser);
     rpc LeaveChat(ChatUser) returns (Nothing);
+    rpc ChatStream(stream ChatMessage) returns (stream ChatMessage);
 }
