@@ -1,14 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"os"
-	"os/signal"
-	"syscall"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 
 	pb "chitchat/grpc"
 )
@@ -22,37 +22,25 @@ func main() {
 
 	client := pb.NewChatServiceClient(conn)
 
-	userName := pb.StringValue{
-		Value: "",
-	}
-	var chatUser *pb.ChatUser
-	var err error
-	for {
-		fmt.Print("Enter username: ")
-		fmt.Scanln(&userName.Value)
-
-		chatUser, err = client.JoinChat(context.Background(), &userName)
-		if err == nil {
-			fmt.Println("User created:" + chatUser.Name)
+	scanner := bufio.NewScanner(os.Stdin)
+	//get userName
+	userName := ""
+	fmt.Print("UserName: ")
+	for scanner.Scan() {
+		userName = scanner.Text()
+		if userName != "" {
 			break
 		}
-
-		fmt.Println(err)
 	}
 
-	//Handle application exit
-	exitChannel := make(chan os.Signal, 1)
-	signal.Notify(exitChannel, os.Interrupt, syscall.SIGTERM)
-
-	go func() {
-		<-exitChannel
-		client.LeaveChat(context.Background(), chatUser)
-		fmt.Println("You left.. Name:" + chatUser.Name)
-		os.Exit(0)
-	}()
+	//create metaData
+	md := metadata.New(map[string]string{
+		"username": userName,
+	})
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	//connect to chatStream
-	chatStream, err := client.ChatStream(context.Background())
+	chatStream, err := client.ChatStream(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -65,33 +53,33 @@ func main() {
 				return
 			}
 
-			fmt.Println(msg.Username + ": " + msg.Message + " @ " + msg.Timestamp)
+			fmt.Println(msg.Username + ": " + msg.Message + " at logical time " + msg.Timestamp)
 		}
 	}()
 
-	for {
-		var text string
-
-		//fmt.Print("> ")
-		fmt.Scanln(&text)
-
+	for scanner.Scan() {
+		var input = scanner.Text()
+		runes := []rune(input) //"rune" is a predeclared type in go
+		if len(runes) > 128 {
+			input = string(runes[:128]) //truncate input to 128 characters.
+			/*
+				So:
+				[]rune(input) converts the string to a rune slice.
+				[:128] takes at most the first 128 runes.
+				string(...) converts the rune slice back to a string.
+			*/
+		}
 		msg := &pb.ChatMessage{
-			Username:  chatUser.Name,
-			Message:   text,
+			Username:  userName,
+			Message:   input,
 			Timestamp: "0",
 		}
 
 		err := chatStream.Send(msg)
-
-		/*err := chatStream.Send(&pb.ChatMessage{
-			Message:   text,
-			Timestamp: "temp",
-		})*/
 
 		if err != nil {
 			fmt.Println(err)
 			break
 		}
 	}
-
 }

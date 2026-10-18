@@ -19,8 +19,6 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ChatService_JoinChat_FullMethodName   = "/ChatService/JoinChat"
-	ChatService_LeaveChat_FullMethodName  = "/ChatService/LeaveChat"
 	ChatService_ChatStream_FullMethodName = "/ChatService/ChatStream"
 )
 
@@ -28,8 +26,6 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ChatServiceClient interface {
-	JoinChat(ctx context.Context, in *StringValue, opts ...grpc.CallOption) (*ChatUser, error)
-	LeaveChat(ctx context.Context, in *ChatUser, opts ...grpc.CallOption) (*Nothing, error)
 	ChatStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChatMessage, ChatMessage], error)
 }
 
@@ -39,26 +35,6 @@ type chatServiceClient struct {
 
 func NewChatServiceClient(cc grpc.ClientConnInterface) ChatServiceClient {
 	return &chatServiceClient{cc}
-}
-
-func (c *chatServiceClient) JoinChat(ctx context.Context, in *StringValue, opts ...grpc.CallOption) (*ChatUser, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ChatUser)
-	err := c.cc.Invoke(ctx, ChatService_JoinChat_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *chatServiceClient) LeaveChat(ctx context.Context, in *ChatUser, opts ...grpc.CallOption) (*Nothing, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Nothing)
-	err := c.cc.Invoke(ctx, ChatService_LeaveChat_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *chatServiceClient) ChatStream(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[ChatMessage, ChatMessage], error) {
@@ -78,8 +54,6 @@ type ChatService_ChatStreamClient = grpc.BidiStreamingClient[ChatMessage, ChatMe
 // All implementations must embed UnimplementedChatServiceServer
 // for forward compatibility.
 type ChatServiceServer interface {
-	JoinChat(context.Context, *StringValue) (*ChatUser, error)
-	LeaveChat(context.Context, *ChatUser) (*Nothing, error)
 	ChatStream(grpc.BidiStreamingServer[ChatMessage, ChatMessage]) error
 	mustEmbedUnimplementedChatServiceServer()
 }
@@ -91,12 +65,6 @@ type ChatServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedChatServiceServer struct{}
 
-func (UnimplementedChatServiceServer) JoinChat(context.Context, *StringValue) (*ChatUser, error) {
-	return nil, status.Error(codes.Unimplemented, "method JoinChat not implemented")
-}
-func (UnimplementedChatServiceServer) LeaveChat(context.Context, *ChatUser) (*Nothing, error) {
-	return nil, status.Error(codes.Unimplemented, "method LeaveChat not implemented")
-}
 func (UnimplementedChatServiceServer) ChatStream(grpc.BidiStreamingServer[ChatMessage, ChatMessage]) error {
 	return status.Error(codes.Unimplemented, "method ChatStream not implemented")
 }
@@ -121,42 +89,6 @@ func RegisterChatServiceServer(s grpc.ServiceRegistrar, srv ChatServiceServer) {
 	s.RegisterService(&ChatService_ServiceDesc, srv)
 }
 
-func _ChatService_JoinChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StringValue)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServiceServer).JoinChat(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ChatService_JoinChat_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).JoinChat(ctx, req.(*StringValue))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ChatService_LeaveChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ChatUser)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ChatServiceServer).LeaveChat(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ChatService_LeaveChat_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ChatServiceServer).LeaveChat(ctx, req.(*ChatUser))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _ChatService_ChatStream_Handler(srv interface{}, stream grpc.ServerStream) error {
 	return srv.(ChatServiceServer).ChatStream(&grpc.GenericServerStream[ChatMessage, ChatMessage]{ServerStream: stream})
 }
@@ -170,16 +102,7 @@ type ChatService_ChatStreamServer = grpc.BidiStreamingServer[ChatMessage, ChatMe
 var ChatService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "ChatService",
 	HandlerType: (*ChatServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "JoinChat",
-			Handler:    _ChatService_JoinChat_Handler,
-		},
-		{
-			MethodName: "LeaveChat",
-			Handler:    _ChatService_LeaveChat_Handler,
-		},
-	},
+	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "ChatStream",

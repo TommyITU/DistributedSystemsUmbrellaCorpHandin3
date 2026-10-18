@@ -57,94 +57,6 @@ func (*Nothing) Descriptor() ([]byte, []int) {
 	return file_grpc_chitchat_proto_rawDescGZIP(), []int{0}
 }
 
-type StringValue struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Value         string                 `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *StringValue) Reset() {
-	*x = StringValue{}
-	mi := &file_grpc_chitchat_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *StringValue) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*StringValue) ProtoMessage() {}
-
-func (x *StringValue) ProtoReflect() protoreflect.Message {
-	mi := &file_grpc_chitchat_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use StringValue.ProtoReflect.Descriptor instead.
-func (*StringValue) Descriptor() ([]byte, []int) {
-	return file_grpc_chitchat_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *StringValue) GetValue() string {
-	if x != nil {
-		return x.Value
-	}
-	return ""
-}
-
-type ChatUser struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ChatUser) Reset() {
-	*x = ChatUser{}
-	mi := &file_grpc_chitchat_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ChatUser) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ChatUser) ProtoMessage() {}
-
-func (x *ChatUser) ProtoReflect() protoreflect.Message {
-	mi := &file_grpc_chitchat_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ChatUser.ProtoReflect.Descriptor instead.
-func (*ChatUser) Descriptor() ([]byte, []int) {
-	return file_grpc_chitchat_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *ChatUser) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
 type ChatMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
@@ -156,7 +68,7 @@ type ChatMessage struct {
 
 func (x *ChatMessage) Reset() {
 	*x = ChatMessage{}
-	mi := &file_grpc_chitchat_proto_msgTypes[3]
+	mi := &file_grpc_chitchat_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -168,7 +80,7 @@ func (x *ChatMessage) String() string {
 func (*ChatMessage) ProtoMessage() {}
 
 func (x *ChatMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_grpc_chitchat_proto_msgTypes[3]
+	mi := &file_grpc_chitchat_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -181,7 +93,7 @@ func (x *ChatMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ChatMessage.ProtoReflect.Descriptor instead.
 func (*ChatMessage) Descriptor() ([]byte, []int) {
-	return file_grpc_chitchat_proto_rawDescGZIP(), []int{3}
+	return file_grpc_chitchat_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ChatMessage) GetUsername() string {
@@ -210,18 +122,12 @@ var File_grpc_chitchat_proto protoreflect.FileDescriptor
 const file_grpc_chitchat_proto_rawDesc = "" +
 	"\n" +
 	"\x13grpc/chitchat.proto\"\t\n" +
-	"\aNothing\"#\n" +
-	"\vStringValue\x12\x14\n" +
-	"\x05value\x18\x01 \x01(\tR\x05value\"\x1e\n" +
-	"\bChatUser\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\"a\n" +
+	"\aNothing\"a\n" +
 	"\vChatMessage\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1c\n" +
-	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp2\x82\x01\n" +
-	"\vChatService\x12#\n" +
-	"\bJoinChat\x12\f.StringValue\x1a\t.ChatUser\x12 \n" +
-	"\tLeaveChat\x12\t.ChatUser\x1a\b.Nothing\x12,\n" +
+	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp2;\n" +
+	"\vChatService\x12,\n" +
 	"\n" +
 	"ChatStream\x12\f.ChatMessage\x1a\f.ChatMessage(\x010\x01B\x18Z\x16chitchat/grpc/chitchatb\x06proto3"
 
@@ -237,22 +143,16 @@ func file_grpc_chitchat_proto_rawDescGZIP() []byte {
 	return file_grpc_chitchat_proto_rawDescData
 }
 
-var file_grpc_chitchat_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_grpc_chitchat_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_grpc_chitchat_proto_goTypes = []any{
 	(*Nothing)(nil),     // 0: Nothing
-	(*StringValue)(nil), // 1: StringValue
-	(*ChatUser)(nil),    // 2: ChatUser
-	(*ChatMessage)(nil), // 3: ChatMessage
+	(*ChatMessage)(nil), // 1: ChatMessage
 }
 var file_grpc_chitchat_proto_depIdxs = []int32{
-	1, // 0: ChatService.JoinChat:input_type -> StringValue
-	2, // 1: ChatService.LeaveChat:input_type -> ChatUser
-	3, // 2: ChatService.ChatStream:input_type -> ChatMessage
-	2, // 3: ChatService.JoinChat:output_type -> ChatUser
-	0, // 4: ChatService.LeaveChat:output_type -> Nothing
-	3, // 5: ChatService.ChatStream:output_type -> ChatMessage
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	1, // 0: ChatService.ChatStream:input_type -> ChatMessage
+	1, // 1: ChatService.ChatStream:output_type -> ChatMessage
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -269,7 +169,7 @@ func file_grpc_chitchat_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_grpc_chitchat_proto_rawDesc), len(file_grpc_chitchat_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
