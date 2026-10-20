@@ -19,7 +19,11 @@ type Server struct {
 	mu          sync.Mutex
 }
 
+var lamportTime uint64
+
 func main() {
+	lamportTime = 0
+
 	fmt.Println("Server started")
 
 	server := &Server{}
@@ -50,22 +54,24 @@ func (s *Server) ChatStream(chatStream pb.ChatService_ChatStreamServer) error {
 				break
 			}
 		}
+		lamportTime++
 		fmt.Println("Client '" + userName + "' disconnected")
 		fmt.Println("nb users:" + strconv.Itoa(len(s.chatStreams)))
 		msg := &pb.ChatMessage{
 			Username:  "Server",
 			Message:   "Participant '" + userName + "' left Chit Chat",
-			Timestamp: "L",
+			Timestamp: lamportTime,
 		}
 		sendMessageToAll(s, msg)
 	}()
 
+	lamportTime++
 	fmt.Println("Client '" + userName + "' connected")
 	fmt.Println("nb users:" + strconv.Itoa(len(s.chatStreams)))
 	msg := &pb.ChatMessage{
 		Username:  "Server",
 		Message:   "Participant '" + userName + "' joined Chit Chat",
-		Timestamp: "L",
+		Timestamp: lamportTime,
 	}
 	sendMessageToAll(s, msg)
 
@@ -79,13 +85,10 @@ func (s *Server) ChatStream(chatStream pb.ChatService_ChatStreamServer) error {
 			return err
 		}
 
-		fmt.Println(msg.Username + ": " + msg.Message + " at logical time " + msg.Timestamp)
+		lamportTime = max(lamportTime, msg.Timestamp) + 1
+		fmt.Println(msg.Username + ": " + msg.Message + " at logical time " + strconv.FormatUint(msg.Timestamp, 10))
 
-		s.mu.Lock()
-		for _, clientStream := range s.chatStreams {
-			clientStream.Send(msg)
-		}
-		s.mu.Unlock()
+		sendMessageToAll(s, msg)
 	}
 }
 

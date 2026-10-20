@@ -61,7 +61,7 @@ type ChatMessage struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Username      string                 `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
 	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Timestamp     string                 `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	Timestamp     uint64                 `protobuf:"varint,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -110,11 +110,11 @@ func (x *ChatMessage) GetMessage() string {
 	return ""
 }
 
-func (x *ChatMessage) GetTimestamp() string {
+func (x *ChatMessage) GetTimestamp() uint64 {
 	if x != nil {
 		return x.Timestamp
 	}
-	return ""
+	return 0
 }
 
 var File_grpc_chitchat_proto protoreflect.FileDescriptor
@@ -126,7 +126,7 @@ const file_grpc_chitchat_proto_rawDesc = "" +
 	"\vChatMessage\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1c\n" +
-	"\ttimestamp\x18\x03 \x01(\tR\ttimestamp2;\n" +
+	"\ttimestamp\x18\x03 \x01(\x04R\ttimestamp2;\n" +
 	"\vChatService\x12,\n" +
 	"\n" +
 	"ChatStream\x12\f.ChatMessage\x1a\f.ChatMessage(\x010\x01B\x18Z\x16chitchat/grpc/chitchatb\x06proto3"

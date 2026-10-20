@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -13,7 +14,10 @@ import (
 	pb "chitchat/grpc"
 )
 
+var lamportTime uint64
+
 func main() {
+	lamportTime = 0
 
 	conn, _ := grpc.NewClient("localhost:5050", grpc.WithTransportCredentials(
 		insecure.NewCredentials()))
@@ -32,6 +36,7 @@ func main() {
 			break
 		}
 	}
+	lamportTime++
 
 	//create metaData
 	md := metadata.New(map[string]string{
@@ -53,7 +58,8 @@ func main() {
 				return
 			}
 
-			fmt.Println(msg.Username + ": " + msg.Message + " at logical time " + msg.Timestamp)
+			lamportTime = max(lamportTime, msg.Timestamp) + 1
+			fmt.Println(msg.Username + ": " + msg.Message + " at logical time " + strconv.FormatUint(msg.Timestamp, 10))
 		}
 	}()
 
@@ -69,10 +75,12 @@ func main() {
 				string(...) converts the rune slice back to a string.
 			*/
 		}
+
+		lamportTime++
 		msg := &pb.ChatMessage{
 			Username:  userName,
 			Message:   input,
-			Timestamp: "0",
+			Timestamp: lamportTime,
 		}
 
 		err := chatStream.Send(msg)
