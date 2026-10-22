@@ -3,9 +3,13 @@ package main
 import (
 	"fmt"
 	"io"
+	"log/slog"
 	"net"
+	"os"
+	"os/signal"
 	"strconv"
 	"sync"
+	"syscall"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -17,14 +21,32 @@ type Server struct {
 	pb.UnimplementedChatServiceServer
 	chatStreams []pb.ChatService_ChatStreamServer
 	mu          sync.Mutex
+	timeMu      sync.Mutex
 }
 
 var lamportTime uint64
+var logger *slog.Logger
 
 func main() {
 	lamportTime = 0
 
+	//logger and it's file ("0644" is file permissions)
+	file, err := os.OpenFile(
+		"server.log",
+		os.O_CREATE|os.O_WRONLY|os.O_APPEND,
+		0644,
+	)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	logger = slog.New(
+		slog.NewTextHandler(file, nil),
+	)
+
 	fmt.Println("Server started")
+	logger.Info("Server started", "component", "Server", "LTime", lamportTime)
 
 	server := &Server{}
 
@@ -32,6 +54,26 @@ func main() {
 	grpcServer := grpc.NewServer()
 
 	pb.RegisterChatServiceServer(grpcServer, server)
+
+	//app termination listener
+	closeChannel := make(chan os.Signal, 1)
+	signal.Notify(
+		closeChannel,
+		os.Interrupt,    // Ctrl+C
+		syscall.SIGTERM, // window close
+	)
+
+	go func() {
+		<-closeChannel
+
+		server.timeMu.Lock()
+		lamportTime++
+		server.timeMu.Unlock()
+		fmt.Println("Server stopped")
+		logger.Info("Server stopped", "component", "Server", "LTime", lamportTime)
+
+		grpcServer.Stop()
+	}()
 
 	grpcServer.Serve(listener)
 }
@@ -54,26 +96,42 @@ func (s *Server) ChatStream(chatStream pb.ChatService_ChatStreamServer) error {
 				break
 			}
 		}
+		s.timeMu.Lock()
 		lamportTime++
+		s.timeMu.Unlock()
+		logger.Info("Client disconnected", "component", "Client", "ClientID", userName, "LTime", lamportTime)
+
 		fmt.Println("Client '" + userName + "' disconnected")
-		fmt.Println("nb users:" + strconv.Itoa(len(s.chatStreams)))
+		//fmt.Println("nb users:" + strconv.Itoa(len(s.chatStreams)))
+		s.timeMu.Lock()
+		lamportTime++
+		s.timeMu.Unlock()
 		msg := &pb.ChatMessage{
 			Username:  "Server",
 			Message:   "Participant '" + userName + "' left Chit Chat",
 			Timestamp: lamportTime,
 		}
-		sendMessageToAll(s, msg)
+
+		for _, clientStream := range s.chatStreams {
+			clientStream.Send(msg)
+		}
+		logger.Info("Client disconnected message sent", "component", "Server", "ClientID", userName, "LTime", lamportTime)
 	}()
 
+	s.timeMu.Lock()
 	lamportTime++
+	logger.Info("Client connected", "component", "Client", "ClientID", userName, "LTime", lamportTime)
 	fmt.Println("Client '" + userName + "' connected")
-	fmt.Println("nb users:" + strconv.Itoa(len(s.chatStreams)))
+	//fmt.Println("nb users:" + strconv.Itoa(len(s.chatStreams)))
+	lamportTime++
+	s.timeMu.Unlock()
 	msg := &pb.ChatMessage{
 		Username:  "Server",
 		Message:   "Participant '" + userName + "' joined Chit Chat",
 		Timestamp: lamportTime,
 	}
 	sendMessageToAll(s, msg)
+	logger.Info("Client connected message sent", "component", "Server", "ClientID", userName, "LTime", lamportTime)
 
 	for {
 		msg, err := chatStream.Recv()
@@ -85,15 +143,20 @@ func (s *Server) ChatStream(chatStream pb.ChatService_ChatStreamServer) error {
 			return err
 		}
 
+		s.timeMu.Lock()
 		lamportTime = max(lamportTime, msg.Timestamp) + 1
-		fmt.Println(msg.Username + ": " + msg.Message + " at logical time " + strconv.FormatUint(msg.Timestamp, 10))
+		logger.Info("Client message received", "component", "Client", "ClientID", userName, "message", msg.Message, "LTime", lamportTime)
+
+		lamportTime++
+		s.timeMu.Unlock()
+		fmt.Println(msg.Username + ": " + msg.Message + " at logical time " + strconv.FormatUint(lamportTime, 10))
+		logger.Info("Client message sent", "component", "Server", "ClientID", userName, "LTime", lamportTime)
 
 		sendMessageToAll(s, msg)
 	}
 }
 
 func sendMessageToAll(s *Server, msg *pb.ChatMessage) {
-	fmt.Println("sendMessageToAll... nb users:" + strconv.Itoa(len(s.chatStreams)))
 	s.mu.Lock()
 	for _, clientStream := range s.chatStreams {
 		clientStream.Send(msg)
