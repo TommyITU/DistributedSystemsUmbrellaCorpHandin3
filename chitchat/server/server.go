@@ -96,26 +96,22 @@ func (s *Server) ChatStream(chatStream pb.ChatService_ChatStreamServer) error {
 				break
 			}
 		}
-		s.timeMu.Lock()
 		lamportTime++
-		s.timeMu.Unlock()
 		logger.Info("Client disconnected", "component", "Client", "ClientID", userName, "LTime", lamportTime)
 
 		fmt.Println("Client '" + userName + "' disconnected")
 		//fmt.Println("nb users:" + strconv.Itoa(len(s.chatStreams)))
-		s.timeMu.Lock()
 		lamportTime++
-		s.timeMu.Unlock()
 		msg := &pb.ChatMessage{
 			Username:  "Server",
 			Message:   "Participant '" + userName + "' left Chit Chat",
 			Timestamp: lamportTime,
 		}
+		logger.Info("Client disconnected message sent", "component", "Server", "ClientID", userName, "LTime", lamportTime)
 
 		for _, clientStream := range s.chatStreams {
 			clientStream.Send(msg)
 		}
-		logger.Info("Client disconnected message sent", "component", "Server", "ClientID", userName, "LTime", lamportTime)
 	}()
 
 	s.timeMu.Lock()
@@ -124,14 +120,14 @@ func (s *Server) ChatStream(chatStream pb.ChatService_ChatStreamServer) error {
 	fmt.Println("Client '" + userName + "' connected")
 	//fmt.Println("nb users:" + strconv.Itoa(len(s.chatStreams)))
 	lamportTime++
-	s.timeMu.Unlock()
 	msg := &pb.ChatMessage{
 		Username:  "Server",
 		Message:   "Participant '" + userName + "' joined Chit Chat",
 		Timestamp: lamportTime,
 	}
-	sendMessageToAll(s, msg)
 	logger.Info("Client connected message sent", "component", "Server", "ClientID", userName, "LTime", lamportTime)
+	s.timeMu.Unlock()
+	sendMessageToAll(s, msg)
 
 	for {
 		msg, err := chatStream.Recv()
@@ -148,9 +144,10 @@ func (s *Server) ChatStream(chatStream pb.ChatService_ChatStreamServer) error {
 		logger.Info("Client message received", "component", "Client", "ClientID", userName, "message", msg.Message, "LTime", lamportTime)
 
 		lamportTime++
-		s.timeMu.Unlock()
+		msg.Timestamp = lamportTime
 		fmt.Println(msg.Username + ": " + msg.Message + " at logical time " + strconv.FormatUint(lamportTime, 10))
 		logger.Info("Client message sent", "component", "Server", "ClientID", userName, "LTime", lamportTime)
+		s.timeMu.Unlock()
 
 		sendMessageToAll(s, msg)
 	}
