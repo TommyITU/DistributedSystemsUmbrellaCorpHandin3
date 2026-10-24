@@ -1,38 +1,40 @@
-time=2026-10-22T15:45:56.309+02:00 level=INFO msg="Server started" component=Server LTime=0
-time=2026-10-22T15:46:04.521+02:00 level=INFO msg="Client connected" component=Client ClientID=Tommy LTime=1
-time=2026-10-22T15:46:04.528+02:00 level=INFO msg="Client connected message sent" component=Server ClientID=Tommy LTime=2
-time=2026-10-22T15:46:11.244+02:00 level=INFO msg="Client message received" component=Client ClientID=Tommy message="Hej hej" LTime=5
-time=2026-10-22T15:46:11.245+02:00 level=INFO msg="Client message sent" component=Server ClientID=Tommy LTime=6
-time=2026-10-22T15:46:22.850+02:00 level=INFO msg="Client connected" component=Client ClientID=Nielsen LTime=7
-time=2026-10-22T15:46:22.851+02:00 level=INFO msg="Client connected message sent" component=Server ClientID=Nielsen LTime=8
-time=2026-10-22T15:46:26.430+02:00 level=INFO msg="Client message received" component=Client ClientID=Nielsen message=Hello LTime=11
-time=2026-10-22T15:46:26.431+02:00 level=INFO msg="Client message sent" component=Server ClientID=Nielsen LTime=12
-time=2026-10-22T15:46:41.156+02:00 level=INFO msg="Client message received" component=Client ClientID=Tommy message="Hello 😊" LTime=13
-time=2026-10-22T15:46:41.157+02:00 level=INFO msg="Client message sent" component=Server ClientID=Tommy LTime=14
-time=2026-10-22T15:47:02.462+02:00 level=INFO msg="Client message received" component=Client ClientID=Nielsen message="I'm leaving" LTime=15
-time=2026-10-22T15:47:02.462+02:00 level=INFO msg="Client message sent" component=Server ClientID=Nielsen LTime=16
-time=2026-10-22T15:47:04.813+02:00 level=INFO msg="Client disconnected" component=Client ClientID=Nielsen LTime=17
-time=2026-10-22T15:47:04.814+02:00 level=INFO msg="Client disconnected message sent" component=Server ClientID=Nielsen LTime=18
-time=2026-10-22T15:47:48.423+02:00 level=INFO msg="Client message received" component=Client ClientID=Tommy message="Boring guy 😒" LTime=21
-time=2026-10-22T15:47:48.423+02:00 level=INFO msg="Client message sent" component=Server ClientID=Tommy LTime=22
-time=2026-10-22T15:48:02.516+02:00 level=INFO msg="Client connected" component=Client ClientID=Nielsen LTime=23
-time=2026-10-22T15:48:02.516+02:00 level=INFO msg="Client connected message sent" component=Server ClientID=Nielsen LTime=24
-time=2026-10-22T15:48:08.769+02:00 level=INFO msg="Client message received" component=Client ClientID=Nielsen message="I'm back!" LTime=27
-time=2026-10-22T15:48:08.769+02:00 level=INFO msg="Client message sent" component=Server ClientID=Nielsen LTime=28
-time=2026-10-22T15:49:13.541+02:00 level=INFO msg="Client connected" component=Client ClientID=AnotherGuy LTime=29
-time=2026-10-22T15:49:13.542+02:00 level=INFO msg="Client connected message sent" component=Server ClientID=AnotherGuy LTime=30
-time=2026-10-22T15:49:24.378+02:00 level=INFO msg="Client message received" component=Client ClientID=AnotherGuy message="Hello. I'm another guy" LTime=33
-time=2026-10-22T15:49:24.388+02:00 level=INFO msg="Client message sent" component=Server ClientID=AnotherGuy LTime=34
-time=2026-10-22T15:49:39.852+02:00 level=INFO msg="Client message received" component=Client ClientID=Nielsen message="Too many people here" LTime=35
-time=2026-10-22T15:49:39.853+02:00 level=INFO msg="Client message sent" component=Server ClientID=Nielsen LTime=36
-time=2026-10-22T15:49:41.235+02:00 level=INFO msg="Client disconnected" component=Client ClientID=Nielsen LTime=37
-time=2026-10-22T15:49:41.236+02:00 level=INFO msg="Client disconnected message sent" component=Server ClientID=Nielsen LTime=38
-time=2026-10-22T15:50:17.788+02:00 level=INFO msg="Client message received" component=Client ClientID=Tommy message="Yeah. I quit too." LTime=41
-time=2026-10-22T15:50:17.789+02:00 level=INFO msg="Client message sent" component=Server ClientID=Tommy LTime=42
-time=2026-10-22T15:50:19.542+02:00 level=INFO msg="Client disconnected" component=Client ClientID=Tommy LTime=43
-time=2026-10-22T15:50:19.543+02:00 level=INFO msg="Client disconnected message sent" component=Server ClientID=Tommy LTime=44
-time=2026-10-22T15:51:06.007+02:00 level=INFO msg="Client message received" component=Client ClientID=AnotherGuy message="Ok then." LTime=47
-time=2026-10-22T15:51:06.007+02:00 level=INFO msg="Client message sent" component=Server ClientID=AnotherGuy LTime=48
-time=2026-10-22T15:51:10.315+02:00 level=INFO msg="Client disconnected" component=Client ClientID=AnotherGuy LTime=49
-time=2026-10-22T15:51:10.316+02:00 level=INFO msg="Client disconnected message sent" component=Server ClientID=AnotherGuy LTime=50
-time=2026-10-22T15:51:18.822+02:00 level=INFO msg="Server stopped" component=Server LTime=51
+time=2026-10-24T15:53:39.609+02:00 level=INFO msg="Server started" component=Server LTime=0
+time=2026-10-24T15:53:59.832+02:00 level=INFO msg="Client connected" component=Client ClientID=Tommy LTime=1
+time=2026-10-24T15:53:59.839+02:00 level=INFO msg="Client connected message sent" component=Server ClientID=Tommy LTime=2
+time=2026-10-24T15:54:05.227+02:00 level=INFO msg="Client message received" component=Client ClientID=Tommy message=Hello LTime=5
+time=2026-10-24T15:54:05.227+02:00 level=INFO msg="Client message sent" component=Server ClientID=Tommy LTime=6
+time=2026-10-24T15:55:01.572+02:00 level=INFO msg="Client connected" component=Client ClientID=Nielsen LTime=7
+time=2026-10-24T15:55:01.572+02:00 level=INFO msg="Client connected message sent" component=Server ClientID=Nielsen LTime=8
+time=2026-10-24T15:55:16.217+02:00 level=INFO msg="Client message received" component=Client ClientID=Nielsen message="Hello 😊" LTime=11
+time=2026-10-24T15:55:16.218+02:00 level=INFO msg="Client message sent" component=Server ClientID=Nielsen LTime=12
+time=2026-10-24T15:55:57.953+02:00 level=INFO msg="Client message received" component=Client ClientID=Tommy message="Hello ❤️" LTime=15
+time=2026-10-24T15:55:57.953+02:00 level=INFO msg="Client message sent" component=Server ClientID=Tommy LTime=16
+time=2026-10-24T15:56:10.193+02:00 level=INFO msg="Client message received" component=Client ClientID=Nielsen message="I'm leaving!" LTime=19
+time=2026-10-24T15:56:10.193+02:00 level=INFO msg="Client message sent" component=Server ClientID=Nielsen LTime=20
+time=2026-10-24T15:56:25.397+02:00 level=INFO msg="Client message received" component=Client ClientID=Tommy message="Boring guy 😒" LTime=23
+time=2026-10-24T15:56:25.398+02:00 level=INFO msg="Client message sent" component=Server ClientID=Tommy LTime=24
+time=2026-10-24T15:57:02.215+02:00 level=INFO msg="Client message received" component=Client ClientID=Nielsen message=HEY! LTime=27
+time=2026-10-24T15:57:02.215+02:00 level=INFO msg="Client message sent" component=Server ClientID=Nielsen LTime=28
+time=2026-10-24T15:57:04.912+02:00 level=INFO msg="Client disconnected" component=Client ClientID=Nielsen LTime=29
+time=2026-10-24T15:57:04.912+02:00 level=INFO msg="Client disconnected message sent" component=Server ClientID=Nielsen LTime=30
+time=2026-10-24T15:57:55.271+02:00 level=INFO msg="Client connected" component=Client ClientID=AnotherGuy LTime=31
+time=2026-10-24T15:57:55.271+02:00 level=INFO msg="Client connected message sent" component=Server ClientID=AnotherGuy LTime=32
+time=2026-10-24T15:57:58.523+02:00 level=INFO msg="Client message received" component=Client ClientID=AnotherGuy message=Hello LTime=35
+time=2026-10-24T15:57:58.524+02:00 level=INFO msg="Client message sent" component=Server ClientID=AnotherGuy LTime=36
+time=2026-10-24T15:58:08.905+02:00 level=INFO msg="Client message received" component=Client ClientID=Tommy message=Hello LTime=39
+time=2026-10-24T15:58:08.906+02:00 level=INFO msg="Client message sent" component=Server ClientID=Tommy LTime=40
+time=2026-10-24T15:58:28.563+02:00 level=INFO msg="Client connected" component=Client ClientID=Nielsen LTime=41
+time=2026-10-24T15:58:28.563+02:00 level=INFO msg="Client connected message sent" component=Server ClientID=Nielsen LTime=42
+time=2026-10-24T15:58:35.825+02:00 level=INFO msg="Client message received" component=Client ClientID=Nielsen message="I'm back!" LTime=45
+time=2026-10-24T15:58:35.825+02:00 level=INFO msg="Client message sent" component=Server ClientID=Nielsen LTime=46
+time=2026-10-24T15:58:48.599+02:00 level=INFO msg="Client disconnected" component=Client ClientID=AnotherGuy LTime=47
+time=2026-10-24T15:58:48.599+02:00 level=INFO msg="Client disconnected message sent" component=Server ClientID=AnotherGuy LTime=48
+time=2026-10-24T15:59:04.358+02:00 level=INFO msg="Client message received" component=Client ClientID=Tommy message="Have fun!" LTime=51
+time=2026-10-24T15:59:04.370+02:00 level=INFO msg="Client message sent" component=Server ClientID=Tommy LTime=52
+time=2026-10-24T15:59:05.712+02:00 level=INFO msg="Client disconnected" component=Client ClientID=Tommy LTime=53
+time=2026-10-24T15:59:05.715+02:00 level=INFO msg="Client disconnected message sent" component=Server ClientID=Tommy LTime=54
+time=2026-10-24T15:59:13.545+02:00 level=INFO msg="Client message received" component=Client ClientID=Nielsen message="Ok then..." LTime=57
+time=2026-10-24T15:59:13.546+02:00 level=INFO msg="Client message sent" component=Server ClientID=Nielsen LTime=58
+time=2026-10-24T15:59:16.300+02:00 level=INFO msg="Client disconnected" component=Client ClientID=Nielsen LTime=59
+time=2026-10-24T15:59:16.300+02:00 level=INFO msg="Client disconnected message sent" component=Server ClientID=Nielsen LTime=60
+time=2026-10-24T15:59:19.839+02:00 level=INFO msg="Server stopped" component=Server LTime=61
