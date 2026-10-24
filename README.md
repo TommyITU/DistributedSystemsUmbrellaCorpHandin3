@@ -4,6 +4,14 @@
 
 
 
+
+
+Repository: https://github.com/TommyITU/DistributedSystemsUmbrellaCorpHandin3
+
+
+
+
+
 How to run Chit Chat:
 
 * Start the server by navigating to the "chitchat\\server" folder and typing "go run server.go".
@@ -14,6 +22,4 @@ How to run Chit Chat:
 
 
 Note: The log is located here: "chitchat\\server\\server.log".
-
-
 
